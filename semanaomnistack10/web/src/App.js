@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 //import logo from './logo.svg';
 //import './App.css';
 // import Header from './Header';
@@ -10,16 +10,16 @@ import React from 'react';
 
 
 function App() {
-  let counter = 0;
+  const [counter, setCounter] = useState(0); //utilizamos desestruturação, pq o useState necessita de 2 valores
 
   function incrementCounter() {
-    counter++;
+    setCounter(counter + 1);
   }
 
 
   return (
     <>
-    <h1>Contador: 0</h1>
+<h1>Contador: {counter}</h1>
     <button onClick={incrementCounter}>Incrementar</button>
     </>
   );
