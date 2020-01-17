@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from './services/api';
 
 import './global.css';
 import './App.css';
@@ -17,6 +18,8 @@ import './Main.css';
 
 
 function App() {
+  const [devs, setDevs] = useState([]);
+
   const [github_username, setGitHubUsername] = useState('');
   const [techs, setTechs] = useState('');
 
@@ -40,10 +43,30 @@ function App() {
     )
   }, []);
 
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
+
   async function handleAddDev(e) {
     e.preventDefault();
 
-    
+    const response = await api.post('/devs', {
+      github_username,
+      techs,
+      latitude,
+      longitude
+    })
+
+    setGitHubUsername('');
+    setTechs('');
+
+    setDevs([...devs, response.data]);
   }
 
   return (
@@ -104,50 +127,19 @@ function App() {
      
       <main>
       <ul>
-        <li className="dev-item">
+        {devs.map(dev => (
+        <li key={dev._id} className="dev-item">
             <header>
-              <img src="https://avatars2.githubusercontent.com/u/53740747?s=460&v=4" alt="Renan Alves"/>
+              <img src={dev.avatar_url} alt={dev.name} />
               <div className="user-info">
-                <strong>Renan Alves</strong>
-                <span>ReactJS, React Native, Node.js</span>
+                <strong>{dev.name}</strong>
+                <span>{dev.techs}</span>
               </div>
             </header>
-            <p>Programador/Desenvolvedor WEB</p>
-            <a href="https://github.com/renanalves23">Acessar perfil no ithub</a>
-        </li>
-        <li className="dev-item">
-            <header>
-              <img src="https://avatars2.githubusercontent.com/u/53740747?s=460&v=4" alt="Renan Alves"/>
-              <div className="user-info">
-                <strong>Renan Alves</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Programador/Desenvolvedor WEB</p>
-            <a href="https://github.com/renanalves23">Acessar perfil no github</a>
-        </li>
-        <li className="dev-item">
-            <header>
-              <img src="https://avatars2.githubusercontent.com/u/53740747?s=460&v=4" alt="Renan Alves"/>
-              <div className="user-info">
-                <strong>Renan Alves</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Programador/Desenvolvedor WEB</p>
-            <a href="https://github.com/renanalves23">Acessar perfil no github</a>
-        </li>
-        <li className="dev-item">
-            <header>
-              <img src="https://avatars2.githubusercontent.com/u/53740747?s=460&v=4" alt="Renan Alves"/>
-              <div className="user-info">
-                <strong>Renan Alves</strong>
-                <span>ReactJS, React Native, Node.js</span>
-              </div>
-            </header>
-            <p>Programador/Desenvolvedor WEB</p>
-            <a href="https://github.com/renanalves23">Acessar perfil no github</a>
-        </li>
+            <p>{dev.bio}</p>
+            <a href={`https://github.com/${dev.github_username}`}>Acessar perfil no ithub</a>
+        </li>))}
+        
       </ul>
       </main>
     </div>
