@@ -2,9 +2,15 @@
 const express =  require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
+
 const routes = require('./routes');
+const { setupWebSocket } = require('./websocket');
 
 const app = express();
+const server = http.Server(app);//servidor http fora do express, podendo, agora, trabalhar com ele diretamente
+
+setupWebSocket(server);
 
 mongoose.connect('mongodb+srv://omnistack:omnistack@cluster0-xqfuj.mongodb.net/week10?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -29,5 +35,5 @@ app.get('/', (request, response) => {
      return response.json({ message: 'Hello oskoakosa'});
 });
 
-app.listen(3333);
+server.listen(3333);
 
