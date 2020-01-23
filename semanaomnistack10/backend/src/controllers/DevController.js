@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
+const { findConnections, sendMessage } = require('../websocket');
 
 // index, show, store, update, destroy
 
@@ -41,13 +42,19 @@ module.exports = {
       techs: techsArray,
       location,
     });
-    
-      /* if(!name) {
-        name = apiResponse.data.login;
-      } */ //como foi feito acima
-    
-     // console.log(request.body);
 
+
+    
+     // Filtrar as conexões que estão a 10 km de distancia
+     // e por techs
+
+
+      const sendSocketMessageTo = findConnections(
+        { latitude, longitude },
+        techsArray,
+      )
+    
+      sendMessage(sendSocketMessageTo, 'new-dev', dev);
     }
   
    
